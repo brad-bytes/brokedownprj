@@ -67,6 +67,16 @@ export default function AdminBandsPage() {
           />
         ))}
 
+        const {
+        data: { user },
+        } = await supabase.auth.getUser()
+
+        await supabase.from("bands").insert({
+          name: "Neurosis",
+          slug: "neurosis",
+          user_id: user?.id,
+        })
+
         <button
           type="submit"
           className="bg-black text-white px-4 py-2 rounded hover:opacity-90"
