@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { supabase } from "@/lib/supabase"
+import { supabaseBrowser } from "@/lib/supabase-browser"
 import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
@@ -12,45 +12,21 @@ export default function LoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      setError(error.message)
-    } else {
-      router.push("/admin")
-    }
+    const { error } = await supabaseBrowser.auth.signInWithPassword({ email, password })
+    if (error) return setError(error.message)
+    router.push("/admin/bands")
   }
 
   return (
-    <main className="max-w-sm mx-auto mt-24">
-      <h1 className="text-2xl font-bold mb-4">Admin Login</h1>
-
-      <form onSubmit={handleLogin} className="space-y-4">
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full border p-2"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full border p-2"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        {error && <p className="text-red-600">{error}</p>}
-
-        <button className="w-full bg-black text-white py-2">
-          Sign in
-        </button>
-      </form>
-    </main>
+    <form onSubmit={handleLogin} style={{ padding: 40 }}>
+      <h1>Admin Login</h1>
+      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+      <br />
+      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+      <br />
+      <button type="submit">Login</button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+    </form>
   )
 }
 
